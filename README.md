@@ -617,5 +617,13 @@ Successfully validated environment file
 $ openstack baremetal node list
 
 $ openstack overcloud node import ~/introspect/nodes.json
+Waiting for messages on queue 'tripleo' with no timeout.
+
+
+4 node(s) successfully moved to the "manageable" state.
+Successfully registered node UUID 34e6c725-bfb3-47f9-8230-655e70dcc16b
+Successfully registered node UUID 21508e01-fc9b-410f-92f8-2659efbe13a3
+Successfully registered node UUID c6eb1460-3a03-4ec3-9460-f593d47fa8fb
+Successfully registered node UUID 46f53654-981f-44b6-9f7b-764ce26ea9e6
 
 ```
