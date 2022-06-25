@@ -229,4 +229,41 @@ $ diff containers-prepare-parameter.yaml containers-prepare-parameter.yaml-25-Ju
 
 # Chapter 4. Installing director on the undercloud
 
+```
+[stack@osp16-director-01 ~]$ cat undercloud.conf 
+[DEFAULT]
+undercloud_hostname = osp16-director-01.example.com
+container_images_file = containers-prepare-parameter.yaml
+local_ip = 172.16.0.81/24
+undercloud_public_host = 172.16.0.82
+undercloud_admin_host = 172.16.0.83
+#undercloud_nameservers = 192.0.2.254
+#undercloud_ntp_servers =
+overcloud_domain_name = example.com
+subnets = ctlplane-subnet
+local_subnet = ctlplane-subnet
+#undercloud_service_certificate =
+generate_service_certificate = true
+certificate_generation_ca = local
+local_interface = enp2s0
+inspection_extras = false
+undercloud_debug = false
+enable_tempest = false
+enable_ui = false
+clean_nodes=true
+hieradata_override = /home/stack/instack-hieradata/undercloud-haproxy-hieradata-overrides.yaml
 
+#undercloud_service_certificate = /etc/pki/instack-certs/undercloud.pem
+#generate_service_certificate = false
+
+[auth]
+
+[ctlplane-subnet]
+cidr = 172.16.0.0/24
+dhcp_start = 172.16.0.85
+dhcp_end = 172.16.0.95
+inspection_iprange = 172.16.0.96,172.16.0.106
+gateway = 172.16.0.81
+masquerade = true
+
+```
