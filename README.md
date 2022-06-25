@@ -14,6 +14,9 @@ git push -u origin main
 git add . ; git commit -a -m "update README" ; git push -u origin main
 
 ```
+**Hyperconverged Infrastructure Guide**
+
+https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/hyperconverged_infrastructure_guide/index
 
 **Clean UP**
 
@@ -628,19 +631,45 @@ $ openstack baremetal node list
 | 46f53654-981f-44b6-9f7b-764ce26ea9e6 | osp16-ceph-01    | None          | power off   | manageable         | False       |
 +--------------------------------------+------------------+---------------+-------------+--------------------+-------------+
 
+$ openstack baremetal node list
++--------------------------------------+------------------+---------------+-------------+--------------------+-------------+
+| UUID                                 | Name             | Instance UUID | Power State | Provisioning State | Maintenance |
++--------------------------------------+------------------+---------------+-------------+--------------------+-------------+
+| 34e6c725-bfb3-47f9-8230-655e70dcc16b | osp16-control-01 | None          | power off   | available          | False       |
+| 21508e01-fc9b-410f-92f8-2659efbe13a3 | osp16-compute-01 | None          | power off   | available          | False       |
+| c6eb1460-3a03-4ec3-9460-f593d47fa8fb | osp16-compute-02 | None          | power off   | available          | False       |
+| 46f53654-981f-44b6-9f7b-764ce26ea9e6 | osp16-ceph-01    | None          | power off   | available          | False       |
++--------------------------------------+------------------+---------------+-------------+--------------------+-------------+
+
 ```
 
 ## 7.2.1. Using director introspection to collect bare metal node hardware information
 
 ```
 $ openstack overcloud node import --introspect --provide nodes.json 
+aiting for messages on queue 'tripleo' with no timeout.
+
+0 node(s) successfully moved to the "manageable" state.
+Successfully registered node UUID 34e6c725-bfb3-47f9-8230-655e70dcc16b
+Successfully registered node UUID 21508e01-fc9b-410f-92f8-2659efbe13a3
+Successfully registered node UUID c6eb1460-3a03-4ec3-9460-f593d47fa8fb
+Successfully registered node UUID 46f53654-981f-44b6-9f7b-764ce26ea9e6
+Waiting for introspection to finish...
+Waiting for messages on queue 'tripleo' with no timeout.
+Introspection of node completed:34e6c725-bfb3-47f9-8230-655e70dcc16b. Status:SUCCESS. Errors:None
+Introspection of node completed:c6eb1460-3a03-4ec3-9460-f593d47fa8fb. Status:SUCCESS. Errors:None
+Introspection of node completed:21508e01-fc9b-410f-92f8-2659efbe13a3. Status:SUCCESS. Errors:None
+Introspection of node completed:46f53654-981f-44b6-9f7b-764ce26ea9e6. Status:SUCCESS. Errors:None
+Successfully introspected 4 node(s).
+Waiting for messages on queue 'tripleo' with no timeout.
+4 node(s) successfully moved to the "available" state.
 
 
 ```
 
 **Monitor the introspection progress logs in a separate terminal window**
-```
 
+```
 $ sudo tail -f /var/log/containers/ironic-inspector/ironic-inspector.log
 2022-06-26 00:15:11.465 8 INFO eventlet.wsgi.server [-] 172.16.0.81 "OPTIONS / HTTP/1.0" status: 200  len: 272 time: 0.0011783
 2022-06-26 00:15:13.475 8 INFO eventlet.wsgi.server [-] 172.16.0.81 "OPTIONS / HTTP/1.0" status: 200  len: 272 time: 0.0012264
@@ -648,4 +677,14 @@ $ sudo tail -f /var/log/containers/ironic-inspector/ironic-inspector.log
 2022-06-26 00:15:17.485 8 INFO eventlet.wsgi.server [-] 172.16.0.81 "OPTIONS / HTTP/1.0" status: 200  len: 272 time: 0.0006082
 2022-06-26 00:15:19.486 8 INFO eventlet.wsgi.server [-] 172.16.0.81 "OPTIONS / HTTP/1.0" status: 200  len: 272 time: 0.0005541
 2022-06-26 00:15:19.687 8 INFO eventlet.wsgi.server [req-b101c1f4-0a47-4555-bd5c-8db4284957d1 069c053c471c447298200a87a05bdc59 a093361368044a8bb6e61057c95990be - default default] 172.16.0.81 "GET /v1/introspection/34e6c725-bfb3-47f9-8230-655e70dcc16b HTTP/1.1" status: 200  len: 483 time: 0.0045085
+```
+
+## 7.2.2. Manually configuring bare-metal node hardware information
+
+```
+$ openstack baremetal node show osp16-control-01 | grep properties
+| properties             | {'vendor': 'unknown', 'local_gb': '59', 'cpus': '4', 'cpu_arch': 'x86_64', 'memory_mb': '16000', 'capabilities': 'cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'}             
+
+$ openstack baremetal node set --property capabilities='node:controller-0,profile:control,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'  osp16-control-01
+
 ```
