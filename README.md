@@ -22,6 +22,18 @@ https://access.redhat.com/solutions/5217561
 ```
 re-running openstack undercloud install
 
+$ openstack baremetal node list
++--------------------------------------+------------------+--------------------------------------+-------------+--------------------+-------------+
+| UUID                                 | Name             | Instance UUID                        | Power State | Provisioning State | Maintenance |
++--------------------------------------+------------------+--------------------------------------+-------------+--------------------+-------------+
+| 2eddeb14-488b-49f9-93a7-d4bd12092dc3 | osp16-control-01 | 34e8fb38-8436-4078-b0b7-9a7e064d79a9 | power on    | active             | False       |
+| a7db5ef7-01e4-4758-a076-0a56565ca2ef | osp16-compute-01 | ab7ed22b-3c34-4bbe-ade8-abda9371fcaf | power on    | active             | False       |
+| 05d36755-28ae-4b83-b71d-a504dd3407f8 | osp16-compute-02 | 9287b52c-c65e-49f2-8b7c-0bc0057d68c6 | power on    | active             | False       |
+| f68ea388-2d16-4429-bacc-0d22e5ca64c7 | osp16-ceph-01    | 7620dcd3-3bef-4034-8742-b3c2de9b5882 | power on    | active             | False       |
++--------------------------------------+------------------+--------------------------------------+-------------+--------------------+-------------+
+
+$ openstack stack delete overcloud --wait --yes
+
 ```
 The home lab setup. Refer to 
 
