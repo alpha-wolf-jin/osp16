@@ -44,9 +44,10 @@ en_US.UTF-8
 
 ```
 
-https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/director_installation_and_usage/index
 
 # 3.1. Preparing the undercloud
+
+https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/director_installation_and_usage/index
 
 ```
 [stack@osp16-director-01 ~]$ hostname
