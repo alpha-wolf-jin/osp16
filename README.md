@@ -465,6 +465,10 @@ dafe3301622c  osp16-director-01.ctlplane.example.com:8787/rhosp-rhel8/openstack-
 $ source ~/stackrc
 (undercloud) [stack@osp16-director-01 ~]$ 
 
+$ ll /var/lib/ironic/httpboot/*
+-rw-r--r--. 1 42422 42422 758 Jun 25 21:50 /var/lib/ironic/httpboot/boot.ipxe
+-rw-r--r--. 1 42422 42422 371 Jun 25 21:44 /var/lib/ironic/httpboot/inspector.ipxe
+
 ```
 
 ## 4.10.1. Single CPU architecture overcloud images
@@ -475,36 +479,13 @@ Your Red Hat OpenStack Platform (RHOSP) installation includes packages that prov
 - overcloud-full-vmlinuz
 
 
-```
-[root@osp16-director-01 ~]# mkdir -p /backup//var/lib/ironic/httpboot
-[root@osp16-director-01 ~]# cp -rp /var/lib/ironic/httpboot/* /backup//var/lib/ironic/httpboot/.
-[root@osp16-director-01 ~]# ll /var/lib/ironic/httpboot/ /backup//var/lib/ironic/httpboot
-/backup//var/lib/ironic/httpboot:
-total 558004
--rwxr-xr-x. 1 42422 42422   8917856 Aug  8  2020 agent.kernel
--rw-r--r--. 1 42422 42422 562464013 Aug  8  2020 agent.ramdisk
--rw-r--r--. 1 42422 42422       758 Aug  8  2020 boot.ipxe
--rw-r--r--. 1 42422 42422       371 Aug  8  2020 inspector.ipxe
-drwxr-xr-x. 2 42422 42422         6 Nov 23  2020 pxelinux.cfg
-
-/var/lib/ironic/httpboot/:
-total 558004
--rwxr-xr-x. 2 42422 42422   8917856 Aug  8  2020 agent.kernel
--rw-r--r--. 2 42422 42422 562464013 Aug  8  2020 agent.ramdisk
--rw-r--r--. 1 42422 42422       758 Aug  8  2020 boot.ipxe
--rw-r--r--. 1 42422 42422       371 Aug  8  2020 inspector.ipxe
-drwxr-xr-x. 2 42422 42422         6 Nov 23  2020 pxelinux.cfg
-[root@osp16-director-01 ~]# rm -rf /var/lib/ironic/httpboot/*
-[root@osp16-director-01 ~]# ll /var/lib/ironic/httpboot/
-total 0
-
-$ sudo dnf remove rhosp-director-images rhosp-director-images-ipa-x86_64
-
-```
-
 
 ```
 $ source ~/stackrc
+
+$ sudo dnf install rhosp-director-images rhosp-director-images-ipa-x86_64
+
+$ rm -rf ./images/
 
 $ mkdir /home/stack/images
 
