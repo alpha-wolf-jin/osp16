@@ -138,3 +138,95 @@ $ sudo dnf update -y
 $ sudo reboot
 
 ```
+
+## 3.4. Installing director packages
+
+```
+$ sudo dnf install -y python3-tripleoclient
+
+$ sudo dnf update -y python3-tripleoclient
+
+```
+
+## 3.5. Installing ceph-ansible
+
+```
+$ sudo subscription-manager repos --enable=rhceph-4-tools-for-rhel-8-x86_64-rpms
+
+$ sudo dnf install -y ceph-ansible
+
+```
+
+## 3.6. Preparing container images
+
+```
+$ mv containers-prepare-parameter.yaml containers-prepare-parameter.yaml-25-Jun-2022
+
+$ sudo openstack tripleo container image prepare default \
+  --local-push-destination \
+  --output-env-file containers-prepare-parameter.yaml
+
+$ vi containers-prepare-parameter.yaml
+# Generated with the following on 2020-09-14T22:27:41.264210
+#
+#   openstack tripleo container image prepare default --local-push-destination --output-env-file containers-prepare-parameter.yaml
+#
+
+parameter_defaults:
+  ContainerImagePrepare:
+  - push_destination: true
+    set:
+      ceph_alertmanager_image: ose-prometheus-alertmanager
+      ceph_alertmanager_namespace: registry.redhat.io/openshift4
+      ceph_alertmanager_tag: 4.1
+      ceph_grafana_image: rhceph-4-dashboard-rhel8
+      ceph_grafana_namespace: registry.redhat.io/rhceph
+      ceph_grafana_tag: 4
+      ceph_image: rhceph-4-rhel8
+      ceph_namespace: registry.redhat.io/rhceph
+      ceph_node_exporter_image: ose-prometheus-node-exporter
+      ceph_node_exporter_namespace: registry.redhat.io/openshift4
+      ceph_node_exporter_tag: v4.1
+      ceph_prometheus_image: ose-prometheus
+      ceph_prometheus_namespace: registry.redhat.io/openshift4
+      ceph_prometheus_tag: 4.1
+      ceph_tag: latest
+      name_prefix: openstack-
+      name_suffix: ''
+      namespace: registry.redhat.io/rhosp-rhel8
+      neutron_driver: ovn
+      rhel_containers: false
+      tag: '16.1'
+    tag_from_label: '{version}-{release}'
+  ContainerImageRegistryCredentials:
+    registry.redhat.io:
+      jinzha1@redhat.com: W*M*@9
+
+$ diff containers-prepare-parameter.yaml containers-prepare-parameter.yaml-25-Jun-2022
+1c1
+< # Generated with the following on 2022-06-25T17:03:22.966295
+---
+> # Generated with the following on 2020-09-14T22:27:41.264210
+12c12
+<       ceph_alertmanager_tag: v4.6
+---
+>       ceph_alertmanager_tag: 4.1
+20c20
+<       ceph_node_exporter_tag: v4.6
+---
+>       ceph_node_exporter_tag: v4.1
+23c23
+<       ceph_prometheus_tag: v4.6
+---
+>       ceph_prometheus_tag: 4.1
+30c30
+<       tag: '16.2'
+---
+>       tag: '16.1'
+
+
+```
+
+# Chapter 4. Installing director on the undercloud
+
+
