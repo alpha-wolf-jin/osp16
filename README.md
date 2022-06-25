@@ -15,6 +15,14 @@ git add . ; git commit -a -m "update README" ; git push -u origin main
 
 ```
 
+**Clean UP**
+
+https://access.redhat.com/solutions/5217561
+
+```
+re-running openstack undercloud install
+
+```
 The home lab setup. Refer to 
 
 https://docs.google.com/document/d/1AhHar-mkisFiXXdRxIJNh9Q0tA4IDUhKZN04rfx7yq4/edit
