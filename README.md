@@ -593,4 +593,29 @@ $ cat ./introspect/nodes.json
     ]
 }
 
+# Sample for Dell Server
+actlr0.json
+
+{
+  "nodes": [{
+    "name": "actlr0",
+    "mac": ["f0:d4:e2:e6:0d:26"],
+    "pm_type": "ipmi",
+    "pm_user": "root",
+    "pm_password": "il0mpswd16#",
+    "pm_addr": "192.168.15.180"
+  }]
+}
+
+$ source ~/stackrc
+
+$  openstack overcloud node import --validate-only  ~/introspect/nodes.json 
+Waiting for messages on queue 'tripleo' with no timeout.
+
+Successfully validated environment file
+
+$ openstack baremetal node list
+
+$ openstack overcloud node import ~/introspect/nodes.json
+
 ```
