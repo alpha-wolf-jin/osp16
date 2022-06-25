@@ -469,6 +469,16 @@ $ ll /var/lib/ironic/httpboot/*
 -rw-r--r--. 1 42422 42422 758 Jun 25 21:50 /var/lib/ironic/httpboot/boot.ipxe
 -rw-r--r--. 1 42422 42422 371 Jun 25 21:44 /var/lib/ironic/httpboot/inspector.ipxe
 
+$ openstack baremetal driver list
++---------------------+-------------------------------+
+| Supported driver(s) | Active host(s)                |
++---------------------+-------------------------------+
+| idrac               | osp16-director-01.example.com |
+| ilo                 | osp16-director-01.example.com |
+| ipmi                | osp16-director-01.example.com |
+| redfish             | osp16-director-01.example.com |
++---------------------+-------------------------------+
+
 ```
 
 ## 4.10.1. Single CPU architecture overcloud images
@@ -504,15 +514,6 @@ total 1813340
 -rw-r--r--. 1 stack stack   10034544 Jun 10 05:30 overcloud-full.vmlinuz
 
 $ openstack image list
-+--------------------------------------+------------------------+--------+
-| ID                                   | Name                   | Status |
-+--------------------------------------+------------------------+--------+
-| 2f92967a-acc9-4225-9768-3ff102c9deed | overcloud-full         | active |
-| fc98b79a-6a07-4f9b-a727-9b5e0971cc25 | overcloud-full-initrd  | active |
-| 65de3ff5-0202-4c2d-9136-2166a7c6daf1 | overcloud-full-vmlinuz | active |
-+--------------------------------------+------------------------+--------+
-
-$ openstack image delete overcloud-full overcloud-full-initrd overcloud-full-vmlinuz
 
 $ openstack overcloud image upload --image-path /home/stack/images/
 
@@ -520,15 +521,76 @@ $ openstack image list
 +--------------------------------------+------------------------+--------+
 | ID                                   | Name                   | Status |
 +--------------------------------------+------------------------+--------+
-| 03974049-5f68-4405-9e7d-f760403ea6e6 | overcloud-full         | active |
-| 6868da36-e9ba-4c9c-aef4-e2ba1c6486e9 | overcloud-full-initrd  | active |
-| c90ed7b6-f1d0-48db-8efe-9d5e4eeae063 | overcloud-full-vmlinuz | active |
+| 53752af1-f646-42bf-ab88-ef6bdc7004b6 | overcloud-full         | active |
+| 6cf2f25a-e94f-4cf2-a26f-34951def60b7 | overcloud-full-initrd  | active |
+| 7e60b2a2-08e7-46c1-a0d3-432ac38673fb | overcloud-full-vmlinuz | active |
 +--------------------------------------+------------------------+--------+
 
-$ ls -l /var/lib/ironic/httpboot
-total 451860
--rwxr-xr-x. 1 root root  10034544 Jun 25 18:53 agent.kernel
--rw-r--r--. 1 root root 452668994 Jun 25 18:53 agent.ramdisk
+$  ls -l /var/lib/ironic/httpboot
+total 451868
+-rwxr-xr-x. 1 root  root   10034544 Jun 25 22:26 agent.kernel
+-rw-r--r--. 1 root  root  452668994 Jun 25 22:26 agent.ramdisk
+-rw-r--r--. 1 42422 42422       758 Jun 25 21:50 boot.ipxe
+-rw-r--r--. 1 42422 42422       371 Jun 25 21:44 inspector.ipxe
 
+$ openstack tripleo container image list
+
+
+```
+
+# Chapter 7. Configuring a basic overcloud
+
+## 7.1. Registering nodes for the overcloud
+
+```
+$ cat ./introspect/nodes.json
+{
+    "nodes": [
+        {
+            "mac": [
+                "52:54:00:95:42:24"
+            ],
+            "name": "osp16-control-01",
+            "pm_addr": "127.0.0.1",
+            "pm_port": "6450",
+            "pm_password": "redhat",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "admin"
+        },
+        {
+            "mac": [
+                "52:54:00:f1:97:53"
+            ],
+            "name": "osp16-compute-01",
+            "pm_addr": "127.0.0.1",
+            "pm_port": "6451",
+            "pm_password": "redhat",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "admin"
+        },
+        {
+            "mac": [
+                "52:54:00:cc:f3:8f"
+            ],
+            "name": "osp16-compute-02",
+            "pm_addr": "127.0.0.1",
+            "pm_port": "6452",
+            "pm_password": "redhat",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "admin"
+        },
+        {
+            "mac": [
+                "52:54:00:ed:ab:3d"
+            ],
+            "name": "osp16-ceph-01",
+            "pm_addr": "127.0.0.1",
+            "pm_port": "6453",
+            "pm_password": "redhat",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "admin"
+        }
+    ]
+}
 
 ```
