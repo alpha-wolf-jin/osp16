@@ -33,6 +33,9 @@ $ vbmc list
 +------------------+---------+---------+------+
 
 ```
+# clean undercloud in Red Hat Enterprise Linux Openstack Platform 
+
+https://access.redhat.com/solutions/2210421
 
 # Director Installation
 
@@ -366,6 +369,80 @@ Your Red Hat OpenStack Platform (RHOSP) installation includes packages that prov
 - overcloud-full-initrd
 - overcloud-full-vmlinuz
 
+
 ```
+[root@osp16-director-01 ~]# mkdir -p /backup//var/lib/ironic/httpboot
+[root@osp16-director-01 ~]# cp -rp /var/lib/ironic/httpboot/* /backup//var/lib/ironic/httpboot/.
+[root@osp16-director-01 ~]# ll /var/lib/ironic/httpboot/ /backup//var/lib/ironic/httpboot
+/backup//var/lib/ironic/httpboot:
+total 558004
+-rwxr-xr-x. 1 42422 42422   8917856 Aug  8  2020 agent.kernel
+-rw-r--r--. 1 42422 42422 562464013 Aug  8  2020 agent.ramdisk
+-rw-r--r--. 1 42422 42422       758 Aug  8  2020 boot.ipxe
+-rw-r--r--. 1 42422 42422       371 Aug  8  2020 inspector.ipxe
+drwxr-xr-x. 2 42422 42422         6 Nov 23  2020 pxelinux.cfg
+
+/var/lib/ironic/httpboot/:
+total 558004
+-rwxr-xr-x. 2 42422 42422   8917856 Aug  8  2020 agent.kernel
+-rw-r--r--. 2 42422 42422 562464013 Aug  8  2020 agent.ramdisk
+-rw-r--r--. 1 42422 42422       758 Aug  8  2020 boot.ipxe
+-rw-r--r--. 1 42422 42422       371 Aug  8  2020 inspector.ipxe
+drwxr-xr-x. 2 42422 42422         6 Nov 23  2020 pxelinux.cfg
+[root@osp16-director-01 ~]# rm -rf /var/lib/ironic/httpboot/*
+[root@osp16-director-01 ~]# ll /var/lib/ironic/httpboot/
+total 0
+
+$ sudo dnf remove rhosp-director-images rhosp-director-images-ipa-x86_64
+
+```
+
+
+```
+$ source ~/stackrc
+
+$ mkdir /home/stack/images
+
+$ cd ~/images
+
+$ for i in /usr/share/rhosp-director-images/overcloud-full-latest-16.2.tar /usr/share/rhosp-director-images/ironic-python-agent-latest-16.2.tar; do tar -xvf $i; done
+
+$ ll
+total 1813340
+-rw-r--r--. 1 stack stack  452668994 Jun 10 05:25 ironic-python-agent.initramfs
+-rwxr-xr-x. 1 stack stack   10034544 Jun 10 05:25 ironic-python-agent.kernel
+-rw-r--r--. 1 stack stack   86768425 Jun 10 05:30 overcloud-full.initrd
+-rw-r--r--. 1 stack stack 1297219584 Jun 10 05:57 overcloud-full.qcow2
+-rw-r--r--. 1 stack stack      35519 Jun 10 05:36 overcloud-full-rpm.manifest
+-rw-r--r--. 1 stack stack      90355 Jun 10 05:36 overcloud-full-signature.manifest
+-rw-r--r--. 1 stack stack   10034544 Jun 10 05:30 overcloud-full.vmlinuz
+
+$ openstack image list
++--------------------------------------+------------------------+--------+
+| ID                                   | Name                   | Status |
++--------------------------------------+------------------------+--------+
+| 2f92967a-acc9-4225-9768-3ff102c9deed | overcloud-full         | active |
+| fc98b79a-6a07-4f9b-a727-9b5e0971cc25 | overcloud-full-initrd  | active |
+| 65de3ff5-0202-4c2d-9136-2166a7c6daf1 | overcloud-full-vmlinuz | active |
++--------------------------------------+------------------------+--------+
+
+$ openstack image delete overcloud-full overcloud-full-initrd overcloud-full-vmlinuz
+
+$ openstack overcloud image upload --image-path /home/stack/images/
+
+$ openstack image list
++--------------------------------------+------------------------+--------+
+| ID                                   | Name                   | Status |
++--------------------------------------+------------------------+--------+
+| 03974049-5f68-4405-9e7d-f760403ea6e6 | overcloud-full         | active |
+| 6868da36-e9ba-4c9c-aef4-e2ba1c6486e9 | overcloud-full-initrd  | active |
+| c90ed7b6-f1d0-48db-8efe-9d5e4eeae063 | overcloud-full-vmlinuz | active |
++--------------------------------------+------------------------+--------+
+
+$ ls -l /var/lib/ironic/httpboot
+total 451860
+-rwxr-xr-x. 1 root root  10034544 Jun 25 18:53 agent.kernel
+-rw-r--r--. 1 root root 452668994 Jun 25 18:53 agent.ramdisk
+
 
 ```
