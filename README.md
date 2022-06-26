@@ -18,6 +18,53 @@ git add . ; git commit -a -m "update README" ; git push -u origin main
 
 https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/hyperconverged_infrastructure_guide/index
 
+**Create thin Diks**
+
+```
+# qemu-img create -f qcow2 osp16-compute-01-disk-01.qcow2 100g
+Formatting 'osp16-compute-01-disk-01.qcow2', fmt=qcow2 size=107374182400 cluster_size=65536 lazy_refcounts=off refcount_bits=16
+
+# qemu-img create -f qcow2 osp16-compute-01-disk-02.qcow2 100g
+
+# qemu-img create -f qcow2 osp16-compute-01-disk-03.qcow2 100g
+
+# qemu-img create -f qcow2 osp16-compute-02-disk-01.qcow2 100g
+
+# qemu-img create -f qcow2 osp16-compute-02-disk-02.qcow2 100g
+
+# qemu-img create -f qcow2 osp16-compute-02-disk-03.qcow2 100g
+
+[root@localhost cluster01]# ll
+total 336820556
+-rw-r--r--. 1 qemu qemu 22300196864 Jun 26 00:18 osp16-ceph-01-disk-01.qcow2
+-rw-r--r--. 1 qemu qemu 35350118400 Jun 26 00:18 osp16-ceph-01-disk-02.qcow2
+-rw-r--r--. 1 qemu qemu 18341363712 Jun 26 00:18 osp16-ceph-01-disk-03.qcow2
+-rw-r--r--. 1 qemu qemu 17017798656 Jun 26 00:18 osp16-ceph-01.qcow2
+-rw-r--r--. 1 root root      197568 Jun  7  2020 osp16-ceph-02.qcow2
+-rw-r--r--. 1 root root      198208 Jun 26 10:09 osp16-compute-01-disk-01.qcow2
+-rw-r--r--. 1 root root      198208 Jun 26 10:09 osp16-compute-01-disk-02.qcow2
+-rw-r--r--. 1 root root      198208 Jun 26 10:09 osp16-compute-01-disk-03.qcow2
+-rw-r--r--. 1 qemu qemu 55607230464 Jun 26 00:18 osp16-compute-01.qcow2
+-rw-r--r--. 1 root root      198208 Jun 26 10:09 osp16-compute-02-disk-01.qcow2
+-rw-r--r--. 1 root root      198208 Jun 26 10:09 osp16-compute-02-disk-02.qcow2
+-rw-r--r--. 1 root root      198208 Jun 26 10:09 osp16-compute-02-disk-03.qcow2
+-rw-r--r--. 1 qemu qemu 60627484672 Jun 26 00:18 osp16-compute-02.qcow2
+-rw-r--r--. 1 qemu qemu 45053444096 Jun 26 00:18 osp16-control-01.qcow2
+-rw-r--r--. 1 qemu qemu 90572193792 Jun 26 01:07 osp16-director-01.qcow2
+
+# qemu-img info osp16-compute-02-disk-01.qcow2
+image: osp16-compute-02-disk-01.qcow2
+file format: qcow2
+virtual size: 100 GiB (107374182400 bytes)
+disk size: 196 KiB
+cluster_size: 65536
+Format specific information:
+    compat: 1.1
+    lazy refcounts: false
+    refcount bits: 16
+    corrupt: false
+
+```
 **Clean UP**
 
 https://access.redhat.com/solutions/5217561
