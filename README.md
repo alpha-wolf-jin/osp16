@@ -1400,6 +1400,8 @@ $ openstack flavor show control --fit-width
 | vcpus                      | 1                                                                               |
 +----------------------------+---------------------------------------------------------------------------------+
 
+```
+
 ## 1.3. Configuring resource isolation on hyperconverged nodes
 
 https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/hyperconverged_infrastructure_guide/index
