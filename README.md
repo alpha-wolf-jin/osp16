@@ -1192,7 +1192,7 @@ $ vim templates/environments/02_node-info.yaml
 parameter_defaults:
   OvercloudComputeHCIFlavor: computeHCI
   ComputeHCICount: 1
-  OvercloudControllerFlavor: control
+  OvercloudControllerFlavor: baremetal
   ControllerCount: 1
 
 ```
@@ -1204,6 +1204,203 @@ https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/ht
 $ openstack baremetal node set osp16-control-01 --property capabilities='node:controller-0,profile:control,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'
 
 $ openstack baremetal node set osp16-compute-01 --property capabilities=profile:computehci,boot_option:local
+
+$ openstack baremetal node set osp16-compute-01 --property capabilities='node:computerHCI-0,profile:ComputeHCI,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'
+
+$ openstack baremetal node set --property root_device='{"by_path": "/dev/disk/by-path/pci-0000:08:00.0"}' osp16-compute-01
+
+$ openstack baremetal node show osp16-compute-01 --fit-width
++------------------------+-------------------------------------------------------------------------------------+
+| Field                  | Value                                                                               |
++------------------------+-------------------------------------------------------------------------------------+
+| allocation_uuid        | None                                                                                |
+| automated_clean        | None                                                                                |
+| bios_interface         | no-bios                                                                             |
+| boot_interface         | ipxe                                                                                |
+| chassis_uuid           | None                                                                                |
+| clean_step             | {}                                                                                  |
+| conductor              | osp16-director-01.example.com                                                       |
+| conductor_group        |                                                                                     |
+| console_enabled        | False                                                                               |
+| console_interface      | ipmitool-socat                                                                      |
+| created_at             | 2022-06-26T03:44:44+00:00                                                           |
+| deploy_interface       | iscsi                                                                               |
+| deploy_step            | {}                                                                                  |
+| description            | None                                                                                |
+| driver                 | ipmi                                                                                |
+| driver_info            | {'deploy_kernel': 'file:///var/lib/ironic/httpboot/agent.kernel', 'rescue_kernel':  |
+|                        | 'file:///var/lib/ironic/httpboot/agent.kernel', 'deploy_ramdisk':                   |
+|                        | 'file:///var/lib/ironic/httpboot/agent.ramdisk', 'rescue_ramdisk':                  |
+|                        | 'file:///var/lib/ironic/httpboot/agent.ramdisk', 'ipmi_address': '127.0.0.1',       |
+|                        | 'ipmi_port': '6451', 'ipmi_password': '******', 'ipmi_username': 'admin'}           |
+| driver_internal_info   | {'agent_erase_devices_iterations': 1, 'agent_erase_devices_zeroize': True,          |
+|                        | 'agent_continue_if_ata_erase_failed': False, 'agent_enable_ata_secure_erase': True, |
+|                        | 'disk_erasure_concurrency': 1, 'last_power_state_change':                           |
+|                        | '2022-06-26T03:49:56.324476', 'agent_version': '5.0.5.dev27',                       |
+|                        | 'agent_last_heartbeat': '2022-06-26T03:49:55.930998', 'hardware_manager_version':   |
+|                        | {'generic_hardware_manager': '1.1'}, 'agent_cached_clean_steps': {'deploy':         |
+|                        | [{'step': 'erase_devices', 'priority': 10, 'interface': 'deploy',                   |
+|                        | 'reboot_requested': False, 'abortable': True}, {'step': 'erase_devices_metadata',   |
+|                        | 'priority': 99, 'interface': 'deploy', 'reboot_requested': False, 'abortable':      |
+|                        | True}], 'raid': [{'step': 'delete_configuration', 'priority': 0, 'interface':       |
+|                        | 'raid', 'reboot_requested': False, 'abortable': True}, {'step':                     |
+|                        | 'create_configuration', 'priority': 0, 'interface': 'raid', 'reboot_requested':     |
+|                        | False, 'abortable': True}]}, 'agent_cached_clean_steps_refreshed': '2022-06-26      |
+|                        | 03:49:50.399556', 'clean_steps': None}                                              |
+| extra                  | {}                                                                                  |
+| fault                  | None                                                                                |
+| inspect_interface      | inspector                                                                           |
+| inspection_finished_at | None                                                                                |
+| inspection_started_at  | None                                                                                |
+| instance_info          | {}                                                                                  |
+| instance_uuid          | None                                                                                |
+| last_error             | None                                                                                |
+| maintenance            | False                                                                               |
+| maintenance_reason     | None                                                                                |
+| management_interface   | ipmitool                                                                            |
+| name                   | osp16-compute-01                                                                    |
+| network_interface      | flat                                                                                |
+| owner                  | None                                                                                |
+| power_interface        | ipmitool                                                                            |
+| power_state            | power off                                                                           |
+| properties             | {'vendor': 'unknown', 'local_gb': '59', 'cpus': '12', 'cpu_arch': 'x86_64',         |
+|                        | 'memory_mb': '54000', 'capabilities': 'node:computerHCI-0,profile:ComputeHCI,boot_o |
+|                        | ption:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true',     |
+|                        | 'root_device': {'by_path': '/dev/disk/by-path/pci-0000:08:00.0'}}                   |
+| protected              | False                                                                               |
+| protected_reason       | None                                                                                |
+| provision_state        | available                                                                           |
+| provision_updated_at   | 2022-06-26T03:50:08+00:00                                                           |
+| raid_config            | {}                                                                                  |
+| raid_interface         | no-raid                                                                             |
+| rescue_interface       | agent                                                                               |
+| reservation            | None                                                                                |
+| resource_class         | baremetal.HCI                                                                       |
+| storage_interface      | noop                                                                                |
+| target_power_state     | None                                                                                |
+| target_provision_state | None                                                                                |
+| target_raid_config     | {}                                                                                  |
+| traits                 | []                                                                                  |
+| updated_at             | 2022-06-26T07:28:38+00:00                                                           |
+| uuid                   | 775df8d1-6320-47f8-86cb-b04c95fca766                                                |
+| vendor_interface       | ipmitool                                                                            |
++------------------------+-------------------------------------------------------------------------------------+
+
+$ openstack flavor show computeHCI --fit-width
++----------------------------+---------------------------------------------------------------------------------+
+| Field                      | Value                                                                           |
++----------------------------+---------------------------------------------------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                                                           |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                                                               |
+| access_project_ids         | None                                                                            |
+| disk                       | 60                                                                              |
+| id                         | 9a11df9b-afa3-447a-9882-ea3a428c4752                                            |
+| name                       | computeHCI                                                                      |
+| os-flavor-access:is_public | True                                                                            |
+| properties                 | resources:CUSTOM_BAREMETAL_HCI='1', resources:DISK_GB='0',                      |
+|                            | resources:MEMORY_MB='0', resources:VCPU='0'                                     |
+| ram                        | 54000                                                                           |
+| rxtx_factor                | 1.0                                                                             |
+| swap                       |                                                                                 |
+| vcpus                      | 12                                                                              |
++----------------------------+---------------------------------------------------------------------------------+
+
+$ openstack baremetal node show osp16-control-01 --fit-width
++------------------------+-------------------------------------------------------------------------------------+
+| Field                  | Value                                                                               |
++------------------------+-------------------------------------------------------------------------------------+
+| allocation_uuid        | None                                                                                |
+| automated_clean        | None                                                                                |
+| bios_interface         | no-bios                                                                             |
+| boot_interface         | ipxe                                                                                |
+| chassis_uuid           | None                                                                                |
+| clean_step             | {}                                                                                  |
+| conductor              | osp16-director-01.example.com                                                       |
+| conductor_group        |                                                                                     |
+| console_enabled        | False                                                                               |
+| console_interface      | ipmitool-socat                                                                      |
+| created_at             | 2022-06-26T03:44:43+00:00                                                           |
+| deploy_interface       | iscsi                                                                               |
+| deploy_step            | {}                                                                                  |
+| description            | None                                                                                |
+| driver                 | ipmi                                                                                |
+| driver_info            | {'deploy_kernel': 'file:///var/lib/ironic/httpboot/agent.kernel', 'rescue_kernel':  |
+|                        | 'file:///var/lib/ironic/httpboot/agent.kernel', 'deploy_ramdisk':                   |
+|                        | 'file:///var/lib/ironic/httpboot/agent.ramdisk', 'rescue_ramdisk':                  |
+|                        | 'file:///var/lib/ironic/httpboot/agent.ramdisk', 'ipmi_address': '127.0.0.1',       |
+|                        | 'ipmi_port': '6450', 'ipmi_password': '******', 'ipmi_username': 'admin'}           |
+| driver_internal_info   | {'agent_erase_devices_iterations': 1, 'agent_erase_devices_zeroize': True,          |
+|                        | 'agent_continue_if_ata_erase_failed': False, 'agent_enable_ata_secure_erase': True, |
+|                        | 'disk_erasure_concurrency': 1, 'last_power_state_change':                           |
+|                        | '2022-06-26T03:49:39.645067', 'agent_version': '5.0.5.dev27',                       |
+|                        | 'agent_last_heartbeat': '2022-06-26T03:49:39.155557', 'hardware_manager_version':   |
+|                        | {'generic_hardware_manager': '1.1'}, 'agent_cached_clean_steps': {'deploy':         |
+|                        | [{'step': 'erase_devices', 'priority': 10, 'interface': 'deploy',                   |
+|                        | 'reboot_requested': False, 'abortable': True}, {'step': 'erase_devices_metadata',   |
+|                        | 'priority': 99, 'interface': 'deploy', 'reboot_requested': False, 'abortable':      |
+|                        | True}], 'raid': [{'step': 'delete_configuration', 'priority': 0, 'interface':       |
+|                        | 'raid', 'reboot_requested': False, 'abortable': True}, {'step':                     |
+|                        | 'create_configuration', 'priority': 0, 'interface': 'raid', 'reboot_requested':     |
+|                        | False, 'abortable': True}]}, 'agent_cached_clean_steps_refreshed': '2022-06-26      |
+|                        | 03:49:37.862473', 'clean_steps': None}                                              |
+| extra                  | {}                                                                                  |
+| fault                  | None                                                                                |
+| inspect_interface      | inspector                                                                           |
+| inspection_finished_at | None                                                                                |
+| inspection_started_at  | None                                                                                |
+| instance_info          | {}                                                                                  |
+| instance_uuid          | None                                                                                |
+| last_error             | None                                                                                |
+| maintenance            | False                                                                               |
+| maintenance_reason     | None                                                                                |
+| management_interface   | ipmitool                                                                            |
+| name                   | osp16-control-01                                                                    |
+| network_interface      | flat                                                                                |
+| owner                  | None                                                                                |
+| power_interface        | ipmitool                                                                            |
+| power_state            | power off                                                                           |
+| properties             | {'vendor': 'unknown', 'local_gb': '59', 'cpus': '4', 'cpu_arch': 'x86_64',          |
+|                        | 'memory_mb': '16000', 'capabilities': 'node:controller-0,profile:control,boot_optio |
+|                        | n:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'}         |
+| protected              | False                                                                               |
+| protected_reason       | None                                                                                |
+| provision_state        | available                                                                           |
+| provision_updated_at   | 2022-06-26T03:49:52+00:00                                                           |
+| raid_config            | {}                                                                                  |
+| raid_interface         | no-raid                                                                             |
+| rescue_interface       | agent                                                                               |
+| reservation            | None                                                                                |
+| resource_class         | baremetal                                                                           |
+| storage_interface      | noop                                                                                |
+| target_power_state     | None                                                                                |
+| target_provision_state | None                                                                                |
+| target_raid_config     | {}                                                                                  |
+| traits                 | []                                                                                  |
+| updated_at             | 2022-06-26T04:41:18+00:00                                                           |
+| uuid                   | 7934360c-ae2e-4422-9658-15e2700f7fb2                                                |
+| vendor_interface       | ipmitool                                                                            |
++------------------------+-------------------------------------------------------------------------------------+
+
+$ openstack flavor show control --fit-width
++----------------------------+---------------------------------------------------------------------------------+
+| Field                      | Value                                                                           |
++----------------------------+---------------------------------------------------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                                                           |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                                                               |
+| access_project_ids         | None                                                                            |
+| disk                       | 40                                                                              |
+| id                         | 5b34996f-f6f8-45b4-ba48-8174442e1de7                                            |
+| name                       | control                                                                         |
+| os-flavor-access:is_public | True                                                                            |
+| properties                 | capabilities:profile='control', resources:CUSTOM_BAREMETAL='1',                 |
+|                            | resources:DISK_GB='0', resources:MEMORY_MB='0', resources:VCPU='0'              |
+| ram                        | 4096                                                                            |
+| rxtx_factor                | 1.0                                                                             |
+| swap                       |                                                                                 |
+| vcpus                      | 1                                                                               |
++----------------------------+---------------------------------------------------------------------------------+
+
+
 
 
 ```
