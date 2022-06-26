@@ -693,6 +693,8 @@ $ openstack baremetal node list
 ## 7.2.1. Using director introspection to collect bare metal node hardware information
 
 ```
+$ cd introspect/
+
 $ openstack overcloud node import --introspect --provide nodes.json 
 aiting for messages on queue 'tripleo' with no timeout.
 
@@ -733,5 +735,475 @@ $ openstack baremetal node show osp16-control-01 | grep properties
 | properties             | {'vendor': 'unknown', 'local_gb': '59', 'cpus': '4', 'cpu_arch': 'x86_64', 'memory_mb': '16000', 'capabilities': 'cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'}             
 
 $ openstack baremetal node set --property capabilities='node:controller-0,profile:control,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'  osp16-control-01
+
+```
+## 2.5. Defining the root disk for multi-disk clusters
+
+https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/deploying_an_overcloud_with_containerized_red_hat_ceph/index#manual-node-tag
+
+```
+$ openstack baremetal introspection data save osp16-compute-01 | jq .
+{
+  "inventory": {
+    "interfaces": [
+      {
+        "name": "enp2s0",
+        "mac_address": "52:54:00:08:d4:46",
+        "ipv4_address": null,
+        "ipv6_address": "fe80::5054:ff:fe08:d446%enp2s0",
+        "has_carrier": true,
+        "lldp": null,
+        "vendor": "0x1af4",
+        "product": "0x0001",
+        "client_id": null,
+        "biosdevname": null
+      },
+      {
+        "name": "enp5s0",
+        "mac_address": "52:54:00:5b:0d:eb",
+        "ipv4_address": null,
+        "ipv6_address": "fe80::5054:ff:fe5b:deb%enp5s0",
+        "has_carrier": true,
+        "lldp": null,
+        "vendor": "0x1af4",
+        "product": "0x0001",
+        "client_id": null,
+        "biosdevname": null
+      },
+      {
+        "name": "enp1s0",
+        "mac_address": "52:54:00:f1:97:53",
+        "ipv4_address": "172.16.0.99",
+        "ipv6_address": "fe80::491f:a03:e6e8:76f0%enp1s0",
+        "has_carrier": true,
+        "lldp": null,
+        "vendor": "0x1af4",
+        "product": "0x0001",
+        "client_id": null,
+        "biosdevname": null
+      },
+      {
+        "name": "enp4s0",
+        "mac_address": "52:54:00:c1:72:dc",
+        "ipv4_address": null,
+        "ipv6_address": "fe80::5054:ff:fec1:72dc%enp4s0",
+        "has_carrier": true,
+        "lldp": null,
+        "vendor": "0x1af4",
+        "product": "0x0001",
+        "client_id": null,
+        "biosdevname": null
+      },
+      {
+        "name": "enp3s0",
+        "mac_address": "52:54:00:3f:2f:12",
+        "ipv4_address": null,
+        "ipv6_address": "fe80::5054:ff:fe3f:2f12%enp3s0",
+        "has_carrier": true,
+        "lldp": null,
+        "vendor": "0x1af4",
+        "product": "0x0001",
+        "client_id": null,
+        "biosdevname": null
+      }
+    ],
+    "cpu": {
+      "model_name": "Intel Core Processor (Skylake, IBRS)",
+      "frequency": "2712.000",
+      "count": 12,
+      "architecture": "x86_64",
+      "flags": [
+        "fpu",
+        "vme",
+        "de",
+        "pse",
+        "tsc",
+        "msr",
+        "pae",
+        "mce",
+        "cx8",
+        "apic",
+        "sep",
+        "mtrr",
+        "pge",
+        "mca",
+        "cmov",
+        "pat",
+        "pse36",
+        "clflush",
+        "mmx",
+        "fxsr",
+        "sse",
+        "sse2",
+        "ss",
+        "syscall",
+        "nx",
+        "pdpe1gb",
+        "rdtscp",
+        "lm",
+        "constant_tsc",
+        "rep_good",
+        "nopl",
+        "xtopology",
+        "cpuid",
+        "tsc_known_freq",
+        "pni",
+        "pclmulqdq",
+        "vmx",
+        "ssse3",
+        "fma",
+        "cx16",
+        "pcid",
+        "sse4_1",
+        "sse4_2",
+        "x2apic",
+        "movbe",
+        "popcnt",
+        "tsc_deadline_timer",
+        "aes",
+        "xsave",
+        "avx",
+        "f16c",
+        "rdrand",
+        "hypervisor",
+        "lahf_lm",
+        "abm",
+        "3dnowprefetch",
+        "cpuid_fault",
+        "invpcid_single",
+        "pti",
+        "ssbd",
+        "ibrs",
+        "ibpb",
+        "stibp",
+        "tpr_shadow",
+        "vnmi",
+        "flexpriority",
+        "ept",
+        "vpid",
+        "ept_ad",
+        "fsgsbase",
+        "tsc_adjust",
+        "bmi1",
+        "hle",
+        "avx2",
+        "smep",
+        "bmi2",
+        "erms",
+        "invpcid",
+        "rtm",
+        "mpx",
+        "rdseed",
+        "adx",
+        "smap",
+        "clflushopt",
+        "xsaveopt",
+        "xsavec",
+        "xgetbv1",
+        "xsaves",
+        "arat",
+        "umip",
+        "md_clear"
+      ]
+    },
+    "disks": [
+      {
+        "name": "/dev/vda",
+        "model": "",
+        "size": 64424509440,
+        "rotational": true,
+        "wwn": null,
+        "serial": null,
+        "vendor": "0x1af4",
+        "wwn_with_extension": null,
+        "wwn_vendor_extension": null,
+        "hctl": null,
+        "by_path": "/dev/disk/by-path/pci-0000:08:00.0"
+      },
+      {
+        "name": "/dev/vdb",
+        "model": "",
+        "size": 107374182400,
+        "rotational": true,
+        "wwn": null,
+        "serial": null,
+        "vendor": "0x1af4",
+        "wwn_with_extension": null,
+        "wwn_vendor_extension": null,
+        "hctl": null,
+        "by_path": "/dev/disk/by-path/pci-0000:0b:00.0"
+      },
+      {
+        "name": "/dev/vdc",
+        "model": "",
+        "size": 107374182400,
+        "rotational": true,
+        "wwn": null,
+        "serial": null,
+        "vendor": "0x1af4",
+        "wwn_with_extension": null,
+        "wwn_vendor_extension": null,
+        "hctl": null,
+        "by_path": "/dev/disk/by-path/pci-0000:0c:00.0"
+      },
+      {
+        "name": "/dev/vdd",
+        "model": "",
+        "size": 107374182400,
+        "rotational": true,
+        "wwn": null,
+        "serial": null,
+        "vendor": "0x1af4",
+        "wwn_with_extension": null,
+        "wwn_vendor_extension": null,
+        "hctl": null,
+        "by_path": "/dev/disk/by-path/pci-0000:0d:00.0"
+      }
+    ],
+    "memory": {
+      "total": 55627997184,
+      "physical_mb": 54000
+    },
+    "bmc_address": "0.0.0.0",
+    "bmc_v6address": "::/0",
+    "system_vendor": {
+      "product_name": "KVM",
+      "serial_number": "",
+      "manufacturer": "Red Hat"
+    },
+    "boot": {
+      "current_boot_mode": "bios",
+      "pxe_interface": "52:54:00:f1:97:53"
+    },
+    "hostname": "localhost.localdomain"
+  },
+  "root_disk": {
+    "name": "/dev/vda",
+    "model": "",
+    "size": 64424509440,
+    "rotational": true,
+    "wwn": null,
+    "serial": null,
+    "vendor": "0x1af4",
+    "wwn_with_extension": null,
+    "wwn_vendor_extension": null,
+    "hctl": null,
+    "by_path": "/dev/disk/by-path/pci-0000:08:00.0"
+  },
+  "boot_interface": "52:54:00:f1:97:53",
+  "error": null,
+  "ipmi_address": null,
+  "ipmi_v6address": null,
+  "all_interfaces": {
+    "enp2s0": {
+      "ip": "fe80::5054:ff:fe08:d446",
+      "mac": "52:54:00:08:d4:46",
+      "client_id": null,
+      "pxe": false
+    },
+    "enp5s0": {
+      "ip": "fe80::5054:ff:fe5b:deb",
+      "mac": "52:54:00:5b:0d:eb",
+      "client_id": null,
+      "pxe": false
+    },
+    "enp1s0": {
+      "ip": "172.16.0.99",
+      "mac": "52:54:00:f1:97:53",
+      "client_id": null,
+      "pxe": true
+    },
+    "enp4s0": {
+      "ip": "fe80::5054:ff:fec1:72dc",
+      "mac": "52:54:00:c1:72:dc",
+      "client_id": null,
+      "pxe": false
+    },
+    "enp3s0": {
+      "ip": "fe80::5054:ff:fe3f:2f12",
+      "mac": "52:54:00:3f:2f:12",
+      "client_id": null,
+      "pxe": false
+    }
+  },
+  "interfaces": {
+    "enp1s0": {
+      "ip": "172.16.0.99",
+      "mac": "52:54:00:f1:97:53",
+      "client_id": null,
+      "pxe": true
+    }
+  },
+  "macs": [
+    "52:54:00:f1:97:53"
+  ],
+  "local_gb": 59,
+  "cpus": 12,
+  "cpu_arch": "x86_64",
+  "memory_mb": 54000
+}
+
+$ openstack baremetal introspection data save osp16-compute-01 | jq ".inventory.disks"
+[
+  {
+    "name": "/dev/vda",
+    "model": "",
+    "size": 64424509440,
+    "rotational": true,
+    "wwn": null,
+    "serial": null,
+    "vendor": "0x1af4",
+    "wwn_with_extension": null,
+    "wwn_vendor_extension": null,
+    "hctl": null,
+    "by_path": "/dev/disk/by-path/pci-0000:08:00.0"
+  },
+  {
+    "name": "/dev/vdb",
+    "model": "",
+    "size": 107374182400,
+    "rotational": true,
+    "wwn": null,
+    "serial": null,
+    "vendor": "0x1af4",
+    "wwn_with_extension": null,
+    "wwn_vendor_extension": null,
+    "hctl": null,
+    "by_path": "/dev/disk/by-path/pci-0000:0b:00.0"
+  },
+  {
+    "name": "/dev/vdc",
+    "model": "",
+    "size": 107374182400,
+    "rotational": true,
+    "wwn": null,
+    "serial": null,
+    "vendor": "0x1af4",
+    "wwn_with_extension": null,
+    "wwn_vendor_extension": null,
+    "hctl": null,
+    "by_path": "/dev/disk/by-path/pci-0000:0c:00.0"
+  },
+  {
+    "name": "/dev/vdd",
+    "model": "",
+    "size": 107374182400,
+    "rotational": true,
+    "wwn": null,
+    "serial": null,
+    "vendor": "0x1af4",
+    "wwn_with_extension": null,
+    "wwn_vendor_extension": null,
+    "hctl": null,
+    "by_path": "/dev/disk/by-path/pci-0000:0d:00.0"
+  }
+]
+
+
+```
+
+## 1.2. Preparing the overcloud role for hyperconverged nodes
+
+https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/hyperconverged_infrastructure_guide/index
+
+```
+$ source ~/stackrc
+
+$ openstack overcloud roles  generate -o /home/stack/templates/roles_data_hci.yaml Controller ComputeHCI
+
+$ vi /home/stack/templates/roles_data_hci.yaml
+###############################################################################
+# Role: ComputeHCI                                                            #
+###############################################################################
+- name: ComputeHCI
+  description: |
+    Compute Node role hosting Ceph OSD too
+  networks:
+    InternalApi:
+      subnet: internal_api_subnet
+    Tenant:
+      subnet: tenant_subnet
+    Storage:
+      subnet: storage_subnet
+    StorageMgmt:
+      subnet: storage_mgmt_subnet
+
+```
+## 3.3. Creating a custom role and flavor for the Ceph MDS service
+
+https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/deploying_an_overcloud_with_containerized_red_hat_ceph/index#dedicated-nodes
+
+
+```
+
+$ openstack flavor create --id auto --ram 54000 --disk 60 --vcpus 12 computeHCI
++----------------------------+--------------------------------------+
+| Field                      | Value                                |
++----------------------------+--------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                    |
+| disk                       | 60                                   |
+| id                         | 9a11df9b-afa3-447a-9882-ea3a428c4752 |
+| name                       | computeHCI                           |
+| os-flavor-access:is_public | True                                 |
+| properties                 |                                      |
+| ram                        | 54000                                |
+| rxtx_factor                | 1.0                                  |
+| swap                       |                                      |
+| vcpus                      | 12                                   |
++----------------------------+--------------------------------------+
+
+$ openstack baremetal node list
++--------------------------------------+------------------+---------------+-------------+--------------------+-------------+
+| UUID                                 | Name             | Instance UUID | Power State | Provisioning State | Maintenance |
++--------------------------------------+------------------+---------------+-------------+--------------------+-------------+
+| 7934360c-ae2e-4422-9658-15e2700f7fb2 | osp16-control-01 | None          | power off   | available          | False       |
+| 775df8d1-6320-47f8-86cb-b04c95fca766 | osp16-compute-01 | None          | power off   | available          | False       |
+| f3d86cf9-1c4a-4d9b-88c9-b2ebd47fea1c | osp16-compute-02 | None          | power off   | available          | False       |
+| 9894edb2-314b-4193-b15e-5c138a1d3db4 | osp16-ceph-01    | None          | power off   | available          | False       |
++--------------------------------------+------------------+---------------+-------------+--------------------+-------------+
+
+$ openstack baremetal node set --resource-class baremetal.HCI osp16-compute-01
+
+```
+
+**Associate the computeHCI flavor with the custom HCI resource class**
+
+To determine the name of a custom resource class that corresponds to a resource class of a Bare Metal service node, convert the resource class to uppercase, replace all punctuation with an underscore, and prefix with CUSTOM_.
+
+```
+$ openstack flavor set --property resources:CUSTOM_BAREMETAL_HCI=1 computeHCI
+
+```
+
+> Note: A flavor can request only one instance of a bare metal resource class.
+
+**Set the following flavor properties to prevent the Compute scheduler from using the bare metal flavor properties to schedule instances**
+
+```
+$ openstack flavor set --property resources:VCPU=0 --property resources:MEMORY_MB=0 --property resources:DISK_GB=0 computeHCI
+
+```
+
+**Add the following parameters to the node-info.yaml file to specify the number of hyperconverged and Controller nodes, and the flavor to use for the hyperconverged and controller designated nodes**
+
+```
+$ vim templates/environments/02_node-info.yaml
+parameter_defaults:
+  OvercloudComputeHCIFlavor: computeHCI
+  ComputeHCICount: 1
+  OvercloudControllerFlavor: control
+  ControllerCount: 1
+
+```
+## 1.2.1. Defining the root disk for multi-disk clusters
+
+https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.2/html-single/hyperconverged_infrastructure_guide/index
+
+```
+$ openstack baremetal node set osp16-control-01 --property capabilities='node:controller-0,profile:control,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'
+
+$ openstack baremetal node set osp16-compute-01 --property capabilities=profile:computehci,boot_option:local
+
 
 ```
