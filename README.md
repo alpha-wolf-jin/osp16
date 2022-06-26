@@ -1591,4 +1591,25 @@ parameter_defaults:
   NeutronNetworkVLANRanges: 'datacentre:1:1000'
   BondInterfaceOvsOptions: "bond_mode=active-backup"
 
+$ cp environments/network-environment.yaml /home/stack/templates/environments/.
+
+# modify /home/stack/templates/environments/network-environment.yaml
+
+$ cat /home/stack/templates/environments/network-environment.yaml | grep -v "^\s*#" | uniq
+resource_registry:
+  OS::TripleO::Controller::Net::SoftwareConfig:
+    ../network/config/bond-with-vlans/controller.yaml
+  OS::TripleO::ComputeHCI::Net::SoftwareConfig:
+    ../network/config/bond-with-vlans/computehci.yaml
+
+parameter_defaults:
+. . .
+  CloudName: osp16-1-clouter01.example.com
+
+  TimeZone: 'Singapore'
+  NetworkDeploymentActions: ['CREATE','UPDATE']
+
+  NeutronPluginExtensions: "dns"
+  NeutronDnsDomain: "example.com"
+
 ```
