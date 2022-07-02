@@ -1863,3 +1863,75 @@ parameter_defaults:
   OVNDBsVirtualFixedIPs: [{'ip_address':'172.17.1.103'}]
 
 ```
+ # Overcloud deployment validation
+
+```
+$ . ~/stackrc 
+
+$ openstack overcloud status
++-----------+-------------------+
+| Plan Name | Deployment Status |
++-----------+-------------------+
+| overcloud |   DEPLOY_SUCCESS  |
++-----------+-------------------+
+
+$ openstack server list --fit-width
++----------------------+----------------------+--------+----------------------+----------------+------------+
+| ID                   | Name                 | Status | Networks             | Image          | Flavor     |
++----------------------+----------------------+--------+----------------------+----------------+------------+
+| a2b3a10b-176b-4a1d-8 | osp16-2-controller-0 | ACTIVE | ctlplane=172.16.0.10 | overcloud-full | control    |
+| 4a3-b77036ac9b6a     |                      |        | 7                    |                |            |
+| 165c7a2d-a190-4869-8 | osp16-2-computehci-0 | ACTIVE | ctlplane=172.16.0.10 | overcloud-full | ComputeHCI |
+| 588-38b682870f95     |                      |        | 8                    |                |            |
++----------------------+----------------------+--------+----------------------+----------------+------------+
+
+$ . /home/stack/templates/overcloudrc 
+
+$ ssh heat-admin@172.16.0.107
+
+$ sudo pcs status
+Cluster name: tripleo_cluster
+Cluster Summary:
+  * Stack: corosync
+  * Current DC: osp16-0-controller-0 (version 2.0.5-9.el8_4.5-ba59be7122) - partition with quorum
+  * Last updated: Sat Jul  2 10:57:33 2022
+  * Last change:  Fri Jul  1 22:14:33 2022 by root via cibadmin on osp16-0-controller-0
+  * 5 nodes configured
+  * 21 resource instances configured
+
+Node List:
+  * Online: [ osp16-0-controller-0 ]
+  * GuestOnline: [ galera-bundle-0@osp16-0-controller-0 ovn-dbs-bundle-0@osp16-0-controller-0 rabbitmq-bundle-0@osp16-0-controller-0 redis-bundle-0@osp16-0-controller-0 ]
+
+Full List of Resources:
+  * ip-172.16.0.101	(ocf::heartbeat:IPaddr2):	 Started osp16-0-controller-0
+  * ip-192.168.122.101	(ocf::heartbeat:IPaddr2):	 Started osp16-0-controller-0
+  * ip-172.17.1.102	(ocf::heartbeat:IPaddr2):	 Started osp16-0-controller-0
+  * ip-172.17.1.101	(ocf::heartbeat:IPaddr2):	 Started osp16-0-controller-0
+  * ip-172.17.3.101	(ocf::heartbeat:IPaddr2):	 Started osp16-0-controller-0
+  * ip-172.17.4.101	(ocf::heartbeat:IPaddr2):	 Started osp16-0-controller-0
+  * Container bundle: haproxy-bundle [cluster.common.tag/openstack-haproxy:pcmklatest]:
+    * haproxy-bundle-podman-0	(ocf::heartbeat:podman):	 Started osp16-0-controller-0
+  * Container bundle: galera-bundle [cluster.common.tag/openstack-mariadb:pcmklatest]:
+    * galera-bundle-0	(ocf::heartbeat:galera):	 Master osp16-0-controller-0
+  * Container bundle: rabbitmq-bundle [cluster.common.tag/openstack-rabbitmq:pcmklatest]:
+    * rabbitmq-bundle-0	(ocf::heartbeat:rabbitmq-cluster):	 Started osp16-0-controller-0
+  * Container bundle: redis-bundle [cluster.common.tag/openstack-redis:pcmklatest]:
+    * redis-bundle-0	(ocf::heartbeat:redis):	 Master osp16-0-controller-0
+  * Container bundle: ovn-dbs-bundle [cluster.common.tag/openstack-ovn-northd:pcmklatest]:
+    * ovn-dbs-bundle-0	(ocf::ovn:ovndb-servers):	 Master osp16-0-controller-0
+  * ip-172.17.1.103	(ocf::heartbeat:IPaddr2):	 Started osp16-0-controller-0
+  * Container bundle: openstack-cinder-volume [cluster.common.tag/openstack-cinder-volume:pcmklatest]:
+    * openstack-cinder-volume-podman-0	(ocf::heartbeat:podman):	 Started osp16-0-controller-0
+
+Daemon Status:
+  corosync: active/enabled
+  pacemaker: active/enabled
+  pcsd: active/enabled
+
+$ sudo podman ps | grep -i Ceph
+01d0a74831d9  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         2 hours ago   Up 2 hours ago          ceph-crash-osp16-0-controller-0
+0795b3cec466  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         2 hours ago   Up 2 hours ago          ceph-mon-osp16-0-controller-0
+b0942580394e  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         2 hours ago   Up 2 hours ago          ceph-mgr-osp16-0-controller-0
+
+```
