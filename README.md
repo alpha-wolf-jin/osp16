@@ -1616,7 +1616,7 @@ parameter_defaults:
 
 # create Flavor and set profile
 
-> There is different in OSP16.2
+> The way in OSP16.2 is defferent from previous version
 
 ```
 $ openstack flavor create --id auto --ram 4096 --disk 40 --vcpus 1 ComputeHCI
@@ -1679,7 +1679,7 @@ capabilities: profile='ComputeHCI'
 
 resource_class: baremetal
 
-**Flavor ComputeHCI properties
+**Flavor ComputeHCI properties** 
 
 capabilities:rofile='ComputeHCI'
 
