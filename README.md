@@ -1660,8 +1660,10 @@ baremetal
 
 ## Map Role to Flavor
 
+```
 <Cloud Name><Role Name>Flavor: <Flavor Nmae>
 <Role Name>Count: <Num of servers with this role>
+```
 
 ```
 $ cat node-info.yaml 
@@ -1710,11 +1712,100 @@ $ openstack flavor show ComputeHCI --fit-width
 
 ### Phyical server with node name
 
+The schduler will select pyhical server with mapping 'capabilities:node' for certain role
+
+For example:
+```
+  <Role Name>SchedulerHints:
+     'capabilities:node': 'computehci-%index%'
+
+  ComputeHCISchedulerHints:
+    'capabilities:node': 'computehci-%index%'
+```
+In our case, the bare metal server with property 'capabilities: node:computehci-0...' will be selected for role 'ComputeHCI'.
+
 ```
 $ openstack baremetal node show osp16-compute-01 -c properties -f value 
 ... 'capabilities': 'node:computehci-0,profile:ComputeHCI, ...
 
-$ openstack baremetal node set osp16-compute-01 --property capabilities='node:computehci-0,profile:ComputeHCI,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'
+$ cat scheduler_hints_env.yaml 
+parameter_defaults:
+  ControllerSchedulerHints:
+    'capabilities:node': 'controller-%index%'
+  ComputeHCISchedulerHints:
+    'capabilities:node': 'computehci-%index%'
 
 ```
 
+### Current baremetal server name and hostname
+
+```
+$ . ~/stackrc 
+
+$ openstack baremetal node list -c Name -f value
+osp16-control-01
+osp16-compute-01
+
+$ openstack server list -c Name -f value
+osp16-2-controller-0
+osp16-2--computehci-0
+
+```
+
+### Define baremetal node name
+
+In the introspect file, we can define baremetal node name.
+
+```
+$ cat nodes.json 
+{
+    "nodes": [
+        {
+            "mac": [
+                "52:54:00:95:42:24"
+            ],
+            "name": "osp16-control-01",
+            "pm_addr": "127.0.0.1",
+            "pm_port": "6450",
+            "pm_password": "redhat",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "admin"
+        },
+        {
+            "mac": [
+                "52:54:00:f1:97:53"
+            ],
+            "name": "osp16-compute-01",
+            "pm_addr": "127.0.0.1",
+            "pm_port": "6451",
+            "pm_password": "redhat",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "admin"
+        }
+    ]
+}
+
+$ openstack overcloud node import --introspect --provide ./nodes.json
+
+```
+
+The scheduler select baremetal based on the name of 'capabilities:node', 
+
+and give the default hostname based on the role_data.yaml
+ 
+In our case the default name will be:
+
+- overcloud-controller-0
+- overcloud-computehci-0
+
+```
+
+- name: Controller
+  ...
+  HostnameFormatDefault: '%stackname%-controller-%index%'
+  ...
+
+- name: ComputeHCI
+  HostnameFormatDefault: '%stackname%-computehci-%index%'
+
+```
