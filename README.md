@@ -1681,7 +1681,7 @@ resource_class: baremetal
 
 **Flavor ComputeHCI properties** 
 
-capabilities:rofile='ComputeHCI'
+capabilities:profile='ComputeHCI'
 
 capabilities:CUSTOM_BAREMETAL='1'
 
