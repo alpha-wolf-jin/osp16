@@ -1789,6 +1789,7 @@ $ openstack overcloud node import --introspect --provide ./nodes.json
 
 ```
 
+### Hostname 
 The scheduler select baremetal based on the name of 'capabilities:node', 
 
 and give the default hostname based on the role_data.yaml
@@ -1799,6 +1800,7 @@ In our case the default name will be:
 - overcloud-computehci-0
 
 ```
+$ cat roles_data_hci.yaml 
 
 - name: Controller
   ...
@@ -1807,5 +1809,57 @@ In our case the default name will be:
 
 - name: ComputeHCI
   HostnameFormatDefault: '%stackname%-computehci-%index%'
+
+```
+
+**Cutomize hostname IPs**
+
+The yaml file can map the default hostname to customize hostname and set fix IPs and VIPs
+
+```
+$ cat scheduler_hints_env.yaml
+parameter_defaults:
+  ControllerSchedulerHints:
+    'capabilities:node': 'controller-%index%'
+  ComputeHCISchedulerHints:
+    'capabilities:node': 'computehci-%index%'
+  HostnameMap:
+    overcloud-controller-0:  osp16-2-controller-0
+    overcloud-computehci-0: osp16-2-computehci-0
+
+  ControllerIPs:
+    ctlplane:
+    - 172.16.0.107
+    internal_api:
+    - 172.17.1.107
+    external:
+    - 192.168.122.107
+    tenant:
+    - 172.17.2.107
+    storage:
+    - 172.17.3.107
+    storage_mgmt:
+    - 172.17.4.107
+  ComputeHCIIPs:
+    ctlplane:
+    - 172.16.0.108
+    internal_api:
+    - 172.17.1.108
+    external:
+    - 192.168.122.108
+    tenant:
+    - 172.17.2.108
+    storage:
+    - 172.17.3.108
+    storage_mgmt:
+    - 172.17.4.108
+
+  ControlFixedIPs: [{'ip_address':'172.16.0.101'}]
+  InternalApiVirtualFixedIPs: [{'ip_address':'172.17.1.101'}]
+  PublicVirtualFixedIPs: [{'ip_address':'192.168.122.101'}]
+  StorageVirtualFixedIPs: [{'ip_address':'172.17.3.101'}]
+  StorageMgmtVirtualFixedIPs: [{'ip_address':'172.17.4.101'}]
+  RedisVirtualFixedIPs: [{'ip_address':'172.17.1.102'}]
+  OVNDBsVirtualFixedIPs: [{'ip_address':'172.17.1.103'}]
 
 ```
