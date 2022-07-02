@@ -1944,20 +1944,42 @@ db3988c61361  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:
 
 ```
 
-#
+#  Test Object container
 
-https://creodias.eu/-/how-to-share-private-container-object-storage-to-another-user
+https://docs.openstack.org/ocata/user-guide/cli-swift-create-containers.html
+
 ```
-$ swift list
-__cache__
-ov-55yi4mg63fw-0-4fotuez6lysq-Controller-yjuzt7udlzib
+$ . /home/stack/templates/overcloudrc 
 
-ov-gs2gqujtofa-0-emlfw7jz2ykq-ComputeHCI-ppdomjtxi2j2
-overcloud
-overcloud-config
-overcloud-messages
-overcloud-swift-rings
-(undercloud) [stack@osp16-director-01 templates]$ swift upload overcloud /tmp/test-main-a1.txt
-tmp/test-main-a1.txt
+$ swift post container-01
+
+$ swift list
+container-01
+object-storage-01
+
+$ swift post container-01
+
+$ touch /tmp/test-main-a1.txt
+
+$ swift upload container-01 /tmp/test-main-a1.txt
+
+$ swift stat container-01
+                      Account: AUTH_1e3dfdb9034f42b19249ae42621b5124
+                    Container: container-01
+                      Objects: 1
+                        Bytes: 0
+                     Read ACL:
+                    Write ACL:
+                      Sync To:
+                     Sync Key:
+                  X-Timestamp: 1656747826.42529
+X-Container-Bytes-Used-Actual: 0
+             X-Storage-Policy: default-placement
+              X-Storage-Class: STANDARD
+                Last-Modified: Sat, 02 Jul 2022 07:45:05 GMT
+                   X-Trans-Id: tx00000000000000000076f-0062bff78e-38cd-default
+       X-Openstack-Request-Id: tx00000000000000000076f-0062bff78e-38cd-default
+                Accept-Ranges: bytes
+                 Content-Type: text/plain; charset=utf-8
 
 ```
