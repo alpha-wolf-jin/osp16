@@ -1942,6 +1942,12 @@ db3988c61361  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:
 20b781641a11  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         14 minutes ago  Up 14 minutes ago          ceph-mds-osp16-2-controller-0
 1c032af6716c  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         5 minutes ago   Up 5 minutes ago           ceph-rgw-osp16-2-controller-0-rgw0
 
+[heat-admin@osp16-2-computehci-0 ~]$ sudo podman ps | grep -i ceph
+21232703cc9a  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                        4 hours ago  Up 4 hours ago          ceph-osd-0
+92175331e75c  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                        4 hours ago  Up 4 hours ago          ceph-osd-1
+e6af2e815a2c  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                        4 hours ago  Up 4 hours ago          ceph-osd-2
+c70112352a34  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                        4 hours ago  Up 4 hours ago          ceph-crash-osp16-2-computehci-0
+
 ```
 
 #  Test Object container
