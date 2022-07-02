@@ -1657,3 +1657,64 @@ $ openstack baremetal node show osp16-compute-01 -c resource_class -f value
 baremetal
 
 ```
+
+## Map Role to Flavor
+
+<Cloud Name><Role Name>Flavor: <Flavor Nmae>
+<Role Name>Count: <Num of servers with this role>
+
+```
+$ cat node-info.yaml 
+parameter_defaults:
+  OvercloudControlFlavor: control
+  ControllerCount: 1
+  OvercloudComputeHCIFlavor: ComputeHCI
+  ComputeHCICount: 1
+
+```
+
+**Physical Server properties & resource_class**
+
+capabilities: profile='ComputeHCI'
+
+resource_class: baremetal
+
+**Flavor ComputeHCI properties
+
+capabilities:rofile='ComputeHCI'
+
+capabilities:CUSTOM_BAREMETAL='1'
+
+```
+$ openstack baremetal node show osp16-compute-01 -c properties -f value 
+... 'capabilities': 'node:computehci-0,profile:ComputeHCI, ...
+
+$ openstack baremetal node show osp16-compute-01 -c resource_class -f value
+baremetal
+
+$ openstack flavor show ComputeHCI --fit-width
++----------------------------+--------------------------------------------------------------+
+| Field                      | Value                                                        |
++----------------------------+--------------------------------------------------------------+
+. . .
+| name                       | ComputeHCI                                                   |
+. . .
+| properties                 | capabilities:profile='ComputeHCI',                           |
+|                            | resources:CUSTOM_BAREMETAL='1', resources:DISK_GB='0',       |
+|                            | resources:MEMORY_MB='0', resources:VCPU='0'                  |
+. . .
+
+```
+
+## Role &  Phyical server &  HostName
+
+### Phyical server with node name
+
+```
+$ openstack baremetal node show osp16-compute-01 -c properties -f value 
+... 'capabilities': 'node:computehci-0,profile:ComputeHCI, ...
+
+$ openstack baremetal node set osp16-compute-01 --property capabilities='node:computehci-0,profile:ComputeHCI,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'
+
+```
+
