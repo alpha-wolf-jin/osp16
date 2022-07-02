@@ -1934,4 +1934,30 @@ $ sudo podman ps | grep -i Ceph
 0795b3cec466  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         2 hours ago   Up 2 hours ago          ceph-mon-osp16-0-controller-0
 b0942580394e  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         2 hours ago   Up 2 hours ago          ceph-mgr-osp16-0-controller-0
 
+
+[heat-admin@osp16-2-controller-0 ~]$ sudo podman ps | grep -i ceph
+08feb26ab7ae  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         3 hours ago     Up 3 hours ago             ceph-crash-osp16-2-controller-0
+db3988c61361  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         17 minutes ago  Up 17 minutes ago          ceph-mon-osp16-2-controller-0
+9459fa71ac0a  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         16 minutes ago  Up 16 minutes ago          ceph-mgr-osp16-2-controller-0
+20b781641a11  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         14 minutes ago  Up 14 minutes ago          ceph-mds-osp16-2-controller-0
+1c032af6716c  osp16-director-01.ctlplane.example.com:8787/rhceph/rhceph-4-rhel8:latest                                         5 minutes ago   Up 5 minutes ago           ceph-rgw-osp16-2-controller-0-rgw0
+
+```
+
+#
+
+https://creodias.eu/-/how-to-share-private-container-object-storage-to-another-user
+```
+$ swift list
+__cache__
+ov-55yi4mg63fw-0-4fotuez6lysq-Controller-yjuzt7udlzib
+
+ov-gs2gqujtofa-0-emlfw7jz2ykq-ComputeHCI-ppdomjtxi2j2
+overcloud
+overcloud-config
+overcloud-messages
+overcloud-swift-rings
+(undercloud) [stack@osp16-director-01 templates]$ swift upload overcloud /tmp/test-main-a1.txt
+tmp/test-main-a1.txt
+
 ```
