@@ -1613,3 +1613,47 @@ parameter_defaults:
   NeutronDnsDomain: "example.com"
 
 ```
+
+# create Flavor and set profile
+
+> There is different in OSP16.2
+
+```
+$ openstack flavor create --id auto --ram 4096 --disk 40 --vcpus 1 ComputeHCI
+
+$ openstack flavor set --property capabilities:profile='ComputeHCI' --property resources:CUSTOM_BAREMETAL=1 --property resources:VCPU=0 --property resources:MEMORY_MB=0  --property resources:DISK_GB=0 ComputeHCI
+
+$ openstack flavor show ComputeHCI --fit-width
++----------------------------+--------------------------------------------------------------+
+| Field                      | Value                                                        |
++----------------------------+--------------------------------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                                        |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                                            |
+| access_project_ids         | None                                                         |
+| disk                       | 40                                                           |
+| id                         | 14f911ab-4b53-4dd9-9f95-5ec72b3de0d3                         |
+| name                       | ComputeHCI                                                   |
+| os-flavor-access:is_public | True                                                         |
+| properties                 | capabilities:profile='ComputeHCI',                           |
+|                            | resources:CUSTOM_BAREMETAL='1', resources:DISK_GB='0',       |
+|                            | resources:MEMORY_MB='0', resources:VCPU='0'                  |
+| ram                        | 4096                                                         |
+| rxtx_factor                | 1.0                                                          |
+| swap                       |                                                              |
+| vcpus                      | 1                                                            |
+
++----------------------------+--------------------------------------------------------------+
+
+$ openstack baremetal node set osp16-compute-01 --property capabilities='node:computehci-0,profile:ComputeHCI,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true'
+
+$ openstack baremetal introspection data save osp16-compute-01 | jq ".inventory.disks"
+
+$ openstack baremetal node set --property root_device='{"by_path": "/dev/disk/by-path/pci-0000:08:00.0"}' osp16-compute-01
+
+$ openstack baremetal node show osp16-compute-01 -c properties -f value 
+{'vendor': 'unknown', 'local_gb': '59', 'cpus': '12', 'cpu_arch': 'x86_64', 'memory_mb': '54000', 'capabilities': 'node:computehci-0,profile:ComputeHCI,boot_option:local,cpu_vt:true,cpu_aes:true,cpu_hugepages:true,cpu_hugepages_1g:true', 'root_device': {'by_path': '/dev/disk/by-path/pci-0000:08:00.0'}}
+
+$ openstack baremetal node show osp16-compute-01 -c resource_class -f value 
+baremetal
+
+```
